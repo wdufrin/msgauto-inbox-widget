@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini Enterprise Omnibar — Interactive Variants &amp; Identity Testbench</title>
+  <script src="../packages/omnibar-wc/dist/gemini-omnibar.js" defer></script>
+  <script src="/gemini-omnibar.js" defer onerror="void 0"></script>
+  <style>
+    :root {
+      --bg-page: #0b0e14;
+      --bg-card: #151922;
+      --bg-elevated: #1c2230;
+      --border-card: #283044;
+      --text-main: #f1f5f9;
+      --text-sub: #94a3b8;
+      --accent: #4285f4;
+      --accent-soft: rgba(66, 133, 244, 0.14);
+      --success: #34a853;
+      --code-bg: #080a0f;
+    }
+    [data-theme="light"] {
+      --bg-page: #f4f7fb;
+      --bg-card: #ffffff;
+      --bg-elevated: #f1f5f9;
+      --border-card: #d8e2f0;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --accent: #1a73e8;
+      --accent-soft: rgba(26, 115, 232, 0.1);
+      --success: #188038;
+      --code-bg: #0f172a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Google Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    /* Sticky Top Navbar demonstrating Variant 2: variant="small" */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--border-card);
+      background: var(--bg-card);
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+    .topbar__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .topbar__sparkle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570);
+      color: #fff;
+      font-size: 0.95rem;
+    }
+    .topbar__right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .topbar__variant-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #8ab4f8;
+      background: var(--accent-soft);
+      border: 1px solid rgba(66, 133, 244, 0.35);
+      padding: 4px 9px;
+      border-radius: 999px;
+    }
+    [data-theme="light"] .topbar__variant-tag {
+      color: #1a73e8;
+    }
+
+    .pill-btn {
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border-card);
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      font-size: 0.79rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pill-btn:hover {
+      border-color: var(--accent);
+    }
+    .pill-btn.is-active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 28px auto;
+      padding: 0 24px 80px;
+    }
+
+    .variant-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: var(--accent-soft);
+      color: #8ab4f8;
+      border: 1px solid rgba(66, 133, 244, 0.35);
+      margin-bottom: 8px;
+    }
+    [data-theme="light"] .variant-badge {
+      color: #1a73e8;
+    }
+
+    /* Hero section demonstrating Variant 1: variant="large" */
+    .hero-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 22px;
+      padding: 26px 28px;
+      margin-bottom: 24px;
+    }
+    .hero-copy {
+      margin-bottom: 16px;
+    }
+    .hero-copy h1 {
+      margin: 0 0 6px;
+      font-size: 1.55rem;
+      font-weight: 700;
+    }
+    .hero-copy p {
+      margin: 0;
+      color: var(--text-sub);
+      font-size: 0.92rem;
+    }
+    .prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .prompt-chips__label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-right: 4px;
+    }
+    .chip-btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-card);
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.1s ease;
+    }
+    .chip-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* Section demonstrating Variant 3: variant="icon" */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 22px;
+      padding: 22px 26px;
+      margin-bottom: 24px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .section-header h2 {
+      margin: 0 0 4px;
+      font-size: 1.15rem;
+    }
+    .section-header p {
+      margin: 0;
+      color: var(--text-sub);
+      font-size: 0.86rem;
+    }
+    .news-items {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .news-item {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-card);
+      font-size: 0.83rem;
+    }
+    .news-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+    .news-item span {
+      color: var(--text-sub);
+      font-size: 0.78rem;
+    }
+
+    /* Interactive Testbench Grid: Auth Simulator + Live Inspector */
+    .testbench-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) {
+      .testbench-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 22px;
+      padding: 22px 24px;
+    }
+    .panel h2 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+    }
+    .panel p {
+      margin: 0 0 14px;
+      color: var(--text-sub);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+    .control-group {
+      margin-bottom: 16px;
+    }
+    .control-group__title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .kv-grid {
+      display: grid;
+      grid-template-columns: 155px 1fr;
+      row-gap: 8px;
+      column-gap: 10px;
+      font-size: 0.81rem;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-card);
+      margin-bottom: 12px;
+    }
+    .kv-key {
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+    .kv-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      word-break: break-all;
+      color: var(--text-main);
+    }
+    .kv-val--highlight {
+      color: #34a853;
+      font-weight: 700;
+    }
+    [data-theme="dark"] .kv-val--highlight {
+      color: #81c995;
+    }
+
+    pre {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--code-bg);
+      color: #e2e8f0;
+      font-size: 0.75rem;
+      line-height: 1.45;
+      overflow-x: auto;
+      border: 1px solid var(--border-card);
+    }
+
+    .code-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 18px;
+    }
+    .code-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 18px;
+      padding: 18px 20px;
+    }
+    .code-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.96rem;
+    }
+    .code-card p {
+      margin: 0 0 12px;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP STICKY NAVBAR: Showcases Variant 2 (variant="small") -->
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="topbar__sparkle">✦</span>
+      <span>Enterprise Intranet — <code>&lt;gemini-omnibar&gt;</code> Testbench</span>
+    </div>
+    <div class="topbar__right">
+      <span class="topbar__variant-tag" title="Mounted inside the sticky header with a floating popover drawer">Option 2: Compact Navbar (<code>variant="small"</code>)</span>
+      <gemini-omnibar
+        id="demo-omnibar-small"
+        variant="small"
+        placeholder="Quick navbar search..."
+        theme="dark"
+        default-mode="streamAssist">
+      </gemini-omnibar>
+      <button type="button" class="pill-btn" id="theme-toggle-btn">Theme: Dark</button>
+      <button type="button" class="pill-btn" id="sim-toggle-btn">Simulated API: OFF</button>
+      <button type="button" class="pill-btn is-active" id="live-env-btn" title="Use Live Discovery Engine API configured in your .env file">⚡ Live .env Backend: ON</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. HERO SECTION: Showcases Variant 1 (variant="large") -->
+    <section class="hero-box">
+      <div class="hero-copy">
+        <span class="variant-badge">Option 1 · Hero Search Bar &amp; Inline Chat Drawer (<code>variant="large"</code>)</span>
+        <h1>Ask Gemini Enterprise Across Your Intranet</h1>
+        <p>Connected to your <code>.env</code> configuration (<span id="env-banner-summary">loading <code>/api/config</code>…</span>). Test multi-turn conversations, <code>Auto (streamAssist)</code> vs. <code>Quick (answer)</code> mode selector, inline <code>[1]</code> citations, and deep-link handoff.</p>
+      </div>
+
+      <gemini-omnibar
+        id="demo-omnibar-large"
+        variant="large"
+        placeholder="Ask Gemini Enterprise..."
+        theme="dark"
+        default-mode="streamAssist">
+      </gemini-omnibar>
+
+      <div class="prompt-chips">
+        <span class="prompt-chips__label">Quick Test Prompts:</span>
+        <button type="button" class="chip-btn" data-target="demo-omnibar-large" data-prompt="Summarize our Q4 engineering architecture priorities and key milestones">Try in Option 1 (Large Hero Bar): "Q4 Architecture Priorities"</button>
+        <button type="button" class="chip-btn" data-target="demo-omnibar-small" data-prompt="What is our enterprise cloud security and SSO authentication policy?">Try in Option 2 (Small Navbar Bar): "Cloud Security &amp; SSO Policy"</button>
+        <button type="button" class="chip-btn" data-target="demo-omnibar-icon" data-prompt="How do I request access to production Kubernetes clusters?">Try in Option 3 (Icon Trigger): "K8s Access Request"</button>
+      </div>
+    </section>
+
+    <!-- 2. SECTION HEADER: Showcases Variant 3 (variant="icon") -->
+    <section class="section-card">
+      <div class="section-header">
+        <div>
+          <span class="variant-badge">Option 3 · 40×40 Search Button / Icon Trigger (<code>variant="icon"</code>)</span>
+          <h2>Enterprise News &amp; Engineering Announcements</h2>
+          <p>Hover or click the <strong>40×40 Gemini sparkle button</strong> on the right (or press <code>Escape</code> when empty to collapse back to an icon).</p>
+        </div>
+
+        <gemini-omnibar
+          id="demo-omnibar-icon"
+          variant="icon"
+          placeholder="Search with Gemini..."
+          theme="dark"
+          default-mode="streamAssist">
+        </gemini-omnibar>
+      </div>
+
+      <div class="news-items">
+        <div class="news-item">
+          <strong>Option 1: Hero Search &amp; Chat Box (<code>variant="large"</code>)</strong>
+          <span>Full-width 56px pill bar with inline expand-down conversation drawer for intranet homepages.</span>
+        </div>
+        <div class="news-item">
+          <strong>Option 2: Compact Navbar Search (<code>variant="small"</code>)</strong>
+          <span>40px compact input in the top navigation bar with a 520px floating chat popover.</span>
+        </div>
+        <div class="news-item">
+          <strong>Option 3: Search Button Trigger (<code>variant="icon"</code>)</strong>
+          <span>40×40 circular sparkle button that expands into a search input + floating chat drawer on click.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. INTERACTIVE AUTHENTICATION & IDENTITY SIMULATOR + TELEMETRY INSPECTOR -->
+    <div class="testbench-grid">
+      <section class="panel">
+        <span class="variant-badge">Live <code>.env</code> Target &amp; Identity Lab</span>
+        <h2>Active <code>.env</code> Target &amp; Identity Overrides</h2>
+        <p>The fields below are automatically populated from your <code>.env</code> file via <code>GET /api/config</code>. You can edit your <code>.env</code> file (or tweak these inputs on the fly) to test any Gemini Enterprise engine.</p>
+
+        <div class="control-group">
+          <div class="control-group__title">Target Engine (Loaded from <code>.env</code> via <code>/api/config</code>)</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;">
+            <label style="font-size:0.75rem;color:var(--text-sub);">Project ID (<code>GCP_PROJECT_ID</code>)
+              <input id="cfg-project" type="text" value="" placeholder="Loaded from .env" style="width:100%;margin-top:3px;padding:6px 8px;border-radius:8px;border:1px solid var(--border-card);background:var(--bg-elevated);color:var(--text-main);font-size:0.78rem;">
+            </label>
+            <label style="font-size:0.75rem;color:var(--text-sub);">Location (<code>GCP_LOCATION</code>)
+              <input id="cfg-location" type="text" value="" placeholder="global" style="width:100%;margin-top:3px;padding:6px 8px;border-radius:8px;border:1px solid var(--border-card);background:var(--bg-elevated);color:var(--text-main);font-size:0.78rem;">
+            </label>
+            <label style="font-size:0.75rem;color:var(--text-sub);">Engine ID (<code>GE_ENGINE_ID</code>)
+              <input id="cfg-engine" type="text" value="" placeholder="Loaded from .env" style="width:100%;margin-top:3px;padding:6px 8px;border-radius:8px;border:1px solid var(--border-card);background:var(--bg-elevated);color:var(--text-main);font-size:0.78rem;">
+            </label>
+            <label style="font-size:0.75rem;color:var(--text-sub);">Widget Config ID (<code>GE_WIDGET_CONFIG_ID</code>)
+              <input id="cfg-cid" type="text" value="" placeholder="Optional deep-link CID" style="width:100%;margin-top:3px;padding:6px 8px;border-radius:8px;border:1px solid var(--border-card);background:var(--bg-elevated);color:var(--text-main);font-size:0.78rem;">
+            </label>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-group__title">Step 1: Select Identity Source</div>
+          <div class="btn-row" id="idp-buttons">
+            <button type="button" class="pill-btn is-active" data-idp="env">Use .env / Server ADC Identity</button>
+            <button type="button" class="pill-btn" data-idp="entra">Entra ID (MSAL + WIF)</button>
+            <button type="button" class="pill-btn" data-idp="okta">Okta OIDC (+ WIF)</button>
+            <button type="button" class="pill-btn" data-idp="gis">Google OAuth (GIS login_hint)</button>
+            <button type="button" class="pill-btn" data-idp="iap">Cloud Run IAP Header</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-group__title">Step 2: Select Identity Transform Strategy (UPN → Cloud Identity Email)</div>
+          <div class="btn-row" id="strategy-buttons">
+            <button type="button" class="pill-btn is-active" data-strategy="passthrough">passthrough (Keep raw email)</button>
+            <button type="button" class="pill-btn" data-strategy="domain_rewrite">domain_rewrite (Opaque UPN → first.last@acme.com)</button>
+            <button type="button" class="pill-btn" data-strategy="claim_template">claim_template ({given_name}.{family_name}@acme.com)</button>
+          </div>
+        </div>
+
+        <div class="control-group" style="margin-bottom:0;">
+          <div class="control-group__title">Step 3: Trigger a Test Query in Any of the 3 Options</div>
+          <div class="btn-row">
+            <button type="button" class="chip-btn" data-target="demo-omnibar-large" data-prompt="Summarize our Q4 engineering architecture priorities">Run in Option 1 (Large Hero Bar)</button>
+            <button type="button" class="chip-btn" data-target="demo-omnibar-small" data-prompt="What is our enterprise cloud security policy?">Run in Option 2 (Small Navbar Bar)</button>
+            <button type="button" class="chip-btn" data-target="demo-omnibar-icon" data-prompt="How do I request access to production Kubernetes clusters?">Run in Option 3 (Icon Trigger)</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <span class="variant-badge">Live Auth &amp; Request Inspector</span>
+        <h2>Resolved <code>.env</code> Config &amp; Outgoing Payload</h2>
+        <p>Shows your active <code>.env</code> settings from <code>/api/config</code> and the exact payload sent by any of the 3 search bars.</p>
+
+        <div class="kv-grid">
+          <div class="kv-key">Target GCP Engine:</div>
+          <div class="kv-val" id="insp-target">Loading from /api/config...</div>
+          <div class="kv-key">Active Auth Method:</div>
+          <div class="kv-val" id="insp-method">.env / Server ADC</div>
+          <div class="kv-key">Raw SSO Identity:</div>
+          <div class="kv-val" id="insp-raw-email">jane.doe@acme.com</div>
+          <div class="kv-key">Transform Strategy:</div>
+          <div class="kv-val" id="insp-strategy">passthrough</div>
+          <div class="kv-key">Resolved Cloud Email:</div>
+          <div class="kv-val kv-val--highlight" id="insp-resolved-email">jane.doe@acme.com</div>
+          <div class="kv-key">Last Active Option:</div>
+          <div class="kv-val" id="insp-variant">large (Option 1 — Hero Omnibar)</div>
+        </div>
+
+        <pre id="insp-payload"><code>// Submit a query in any of the 3 bars to inspect the live request &amp; response</code></pre>
+      </section>
+    </div>
+
+    <!-- 4. COPY-PASTE SNIPPETS FOR ALL 3 VARIANTS -->
+    <div class="code-cards">
+      <div class="code-card">
+        <h3>Option 1: Large Hero Omnibar</h3>
+        <p>Full-width prompt bar with inline expand-down chat drawer.</p>
+        <pre><code>&lt;gemini-omnibar
+  variant="large"
+  api-url="https://gemini-proxy.corp.example.com"
+  placeholder="Ask Gemini Enterprise"
+  theme="dark"&gt;
+&lt;/gemini-omnibar&gt;</code></pre>
+      </div>
+
+      <div class="code-card">
+        <h3>Option 2: Small Navbar Search Bar</h3>
+        <p>40px-tall compact header input (360px wide) with floating popover drawer.</p>
+        <pre><code>&lt;gemini-omnibar
+  variant="small"
+  api-url="https://gemini-proxy.corp.example.com"
+  placeholder="Quick search Gemini..."
+  theme="dark"&gt;
+&lt;/gemini-omnibar&gt;</code></pre>
+      </div>
+
+      <div class="code-card">
+        <h3>Option 3: Expandable 40×40 Search Button</h3>
+        <p>Compact 40×40 icon button that smoothly expands on click.</p>
+        <pre><code>&lt;gemini-omnibar
+  variant="icon"
+  api-url="https://gemini-proxy.corp.example.com"
+  placeholder="Search with Gemini..."
+  theme="dark"&gt;
+&lt;/gemini-omnibar&gt;</code></pre>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const omnibars = Array.from(document.querySelectorAll("gemini-omnibar"));
+      const themeBtn = document.getElementById("theme-toggle-btn");
+      const simBtn = document.getElementById("sim-toggle-btn");
+      const liveEnvBtn = document.getElementById("live-env-btn");
+      const envBannerSummary = document.getElementById("env-banner-summary");
+      const inspMethod = document.getElementById("insp-method");
+      const inspRawEmail = document.getElementById("insp-raw-email");
+      const inspStrategy = document.getElementById("insp-strategy");
+      const inspResolvedEmail = document.getElementById("insp-resolved-email");
+      const inspVariant = document.getElementById("insp-variant");
+      const inspPayload = document.getElementById("insp-payload");
+      const cfgProject = document.getElementById("cfg-project");
+      const cfgLocation = document.getElementById("cfg-location");
+      const cfgEngine = document.getElementById("cfg-engine");
+      const cfgCid = document.getElementById("cfg-cid");
+      const inspTarget = document.getElementById("insp-target");
+
+      let isDark = true;
+      let simulate = false; // Default to LIVE backend when served via node-proxy
+      let currentIdp = "env";
+      let currentStrategy = "passthrough";
+      let backendUserEmail = "jane.doe@acme.com";
+      const realFetch = window.fetch.bind(window);
+
+      function setSimulationMode(useSim) {
+        simulate = Boolean(useSim);
+        simBtn.classList.toggle("is-active", simulate);
+        liveEnvBtn.classList.toggle("is-active", !simulate);
+        simBtn.textContent = "Simulated API: " + (simulate ? "ON" : "OFF");
+        liveEnvBtn.textContent = simulate ? "⚡ Switch to Live .env Backend" : "⚡ Live .env Backend: ON";
+      }
+
+      function makeFakeJwt(payloadObj) {
+        const header = btoa(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+        const payload = btoa(JSON.stringify(payloadObj));
+        return header + "." + payload + ".simulated_signature";
+      }
+
+      function syncEngineTargetInputs() {
+        const p = (cfgProject.value || "").trim();
+        const l = (cfgLocation.value || "global").trim();
+        const e = (cfgEngine.value || "").trim();
+        const c = (cfgCid.value || "").trim();
+        omnibars.forEach((bar) => {
+          if (p) bar.setAttribute("project-id", p);
+          if (l) bar.setAttribute("location", l);
+          if (e) bar.setAttribute("engine-id", e);
+          if (c) bar.setAttribute("widget-config-id", c);
+        });
+        inspTarget.textContent = (p || "(unset)") + " / " + l + " / " + (e || "(unset)");
+      }
+
+      [cfgProject, cfgLocation, cfgEngine, cfgCid].forEach((input) => {
+        if (input) input.addEventListener("input", syncEngineTargetInputs);
+      });
+
+      function applyIdentityPreset(idp, strategy) {
+        currentIdp = idp;
+        currentStrategy = strategy;
+        window.localStorage.clear();
+        window.sessionStorage.clear();
+
+        omnibars.forEach((bar) => {
+          bar.setAttribute("identity-strategy", strategy);
+          bar.setAttribute("identity-source-domain", "corp.acme.com");
+          bar.setAttribute("identity-domain", "acme.com");
+          bar.setAttribute("identity-template", "{given_name}.{family_name}@{domain}");
+          bar.state.userEmail = "";
+        });
+
+        let methodLabel = "";
+        let rawDesc = "";
+
+        if (idp === "env") {
+          methodLabel = ".env Default Identity + Server ADC / OAuth";
+          rawDesc = backendUserEmail + " (from .env / Server)";
+          omnibars.forEach((bar) => {
+            bar.state.userEmail = backendUserEmail;
+          });
+        } else if (idp === "entra") {
+          methodLabel = "Microsoft Entra ID (MSAL) + GCP WIF";
+          rawDesc = 'dz9812@nam.corp.acme.com (name: "Doe, Jane")';
+          const accountKey = "home-account-id.login.windows.net-idtoken-client-realm";
+          window.localStorage.setItem("msal.account.keys", JSON.stringify([accountKey]));
+          window.localStorage.setItem(
+            accountKey,
+            JSON.stringify({
+              homeAccountId: "home-account-id",
+              environment: "login.windows.net",
+              username: "dz9812@nam.corp.acme.com",
+              name: "Doe, Jane",
+              idTokenClaims: {
+                preferred_username: "dz9812@nam.corp.acme.com",
+                given_name: "Jane",
+                family_name: "Doe",
+                name: "Doe, Jane"
+              }
+            })
+          );
+          const tokenKey = "home-account-id.login.windows.net-accesstoken-client-realm-scope";
+          window.localStorage.setItem(
+            "msal.token.keys.client",
+            JSON.stringify({ accessToken: [tokenKey], idToken: [] })
+          );
+          window.localStorage.setItem(
+            tokenKey,
+            JSON.stringify({
+              credentialType: "AccessToken",
+              secret: makeFakeJwt({
+                iss: "https://login.microsoftonline.com/tenant/v2.0",
+                upn: "dz9812@nam.corp.acme.com",
+                given_name: "Jane",
+                family_name: "Doe",
+                name: "Doe, Jane"
+              })
+            })
+          );
+        } else if (idp === "okta") {
+          methodLabel = "Okta OIDC Token Storage + GCP WIF";
+          rawDesc = 'a.rivera@emea.corp.acme.com (name: "Alex Rivera")';
+          window.localStorage.setItem(
+            "okta-token-storage",
+            JSON.stringify({
+              idToken: {
+                idToken: makeFakeJwt({
+                  iss: "https://acme.okta.com/oauth2/default",
+                  email: "a.rivera@emea.corp.acme.com",
+                  given_name: "Alex",
+                  family_name: "Rivera",
+                  name: "Alex Rivera"
+                }),
+                claims: {
+                  email: "a.rivera@emea.corp.acme.com",
+                  given_name: "Alex",
+                  family_name: "Rivera",
+                  name: "Alex Rivera"
+                }
+              }
+            })
+          );
+        } else if (idp === "gis") {
+          methodLabel = "Google OAuth 2.0 (GIS Silent login_hint)";
+          rawDesc = "alex.rivera@acme.com (Google Workspace)";
+          omnibars.forEach((bar) => {
+            bar.state.userEmail = "alex.rivera@acme.com";
+          });
+          window.sessionStorage.setItem(
+            "ge_omnibar_google_oauth",
+            JSON.stringify({
+              accessToken: "mock-google-oauth-token-simulated",
+              email: "alex.rivera@acme.com",
+              expiresAt: Date.now() + 3600 * 1000
+            })
+          );
+        } else if (idp === "iap") {
+          methodLabel = "Cloud Run IAP Header (X-Goog-Authenticated-User-Email)";
+          rawDesc = "accounts.google.com:sam.patel@acme.com";
+          omnibars.forEach((bar) => {
+            bar.state.userEmail = "sam.patel@acme.com";
+          });
+        }
+
+        const lib = window.GeminiOmnibar;
+        const discovered = lib ? lib.discoverBrowserIdentity(omnibars[0].state.userEmail) : null;
+        const resolved =
+          discovered && lib
+            ? lib.resolveCloudIdentityEmail(
+                discovered.email,
+                discovered.givenName,
+                discovered.familyName,
+                discovered.displayName,
+                {
+                  strategy,
+                  sourceDomain: "corp.acme.com",
+                  targetDomain: "acme.com",
+                  claimTemplate: "{given_name}.{family_name}@{domain}"
+                }
+              )
+            : omnibars[0].state.userEmail;
+
+        inspMethod.textContent = methodLabel;
+        inspRawEmail.textContent = rawDesc;
+        inspStrategy.textContent =
+          strategy === "passthrough" ? "passthrough (no rewrite)" : strategy + " → acme.com";
+        inspResolvedEmail.textContent = resolved || "(none)";
+      }
+
+      // Load live configuration from /api/config (.env)
+      realFetch("/api/config", { headers: { Accept: "application/json" } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((cfg) => {
+          if (cfg && cfg.projectId && cfg.engineId) {
+            cfgProject.value = cfg.projectId;
+            cfgLocation.value = cfg.location || "global";
+            cfgEngine.value = cfg.engineId;
+            cfgCid.value = cfg.widgetConfigId || "";
+            if (cfg.userEmail) {
+              backendUserEmail = cfg.userEmail;
+            }
+            syncEngineTargetInputs();
+            setSimulationMode(false);
+            envBannerSummary.innerHTML =
+              "<code>" +
+              cfg.projectId +
+              "</code> / <code>" +
+              cfg.engineId +
+              "</code>";
+            applyIdentityPreset(currentIdp, currentStrategy);
+          } else {
+            // Fallback if opened via file:// without node server
+            cfgProject.value = "your-gcp-project-id";
+            cfgLocation.value = "global";
+            cfgEngine.value = "your-gemini-engine-id";
+            cfgCid.value = "00000000-0000-0000-0000-000000000000";
+            syncEngineTargetInputs();
+            setSimulationMode(true);
+            envBannerSummary.textContent = "Offline Simulated Mode (run `npm start` for live .env)";
+            applyIdentityPreset(currentIdp, currentStrategy);
+          }
+        })
+        .catch(() => {
+          cfgProject.value = "your-gcp-project-id";
+          cfgLocation.value = "global";
+          cfgEngine.value = "your-gemini-engine-id";
+          cfgCid.value = "00000000-0000-0000-0000-000000000000";
+          syncEngineTargetInputs();
+          setSimulationMode(true);
+          envBannerSummary.textContent = "Offline Simulated Mode (run `npm start` for live .env)";
+          applyIdentityPreset(currentIdp, currentStrategy);
+        });
+
+      window.fetch = async (url, opts) => {
+        if (String(url).endsWith("/api/search")) {
+          const body = opts && opts.body ? JSON.parse(opts.body) : {};
+          const headers = (opts && opts.headers) || {};
+
+          inspPayload.textContent = JSON.stringify(
+            {
+              mode: simulate ? "SIMULATED_RESPONSE" : "LIVE_ENV_BACKEND_PROXY",
+              endpoint: "POST /api/search",
+              headersSentByOmnibar: headers,
+              requestBody: body
+            },
+            null,
+            2
+          );
+
+          if (simulate) {
+            await new Promise((r) => setTimeout(r, 380));
+            const sessionId = "9876543210";
+            const activeEmail =
+              headers["X-User-Email"] || body.userPseudoId || backendUserEmail;
+            const proj = body.projectId || cfgProject.value || "your-gcp-project-id";
+            const loc = body.location || cfgLocation.value || "global";
+            const eng =
+              body.engineId || cfgEngine.value || "your-gemini-engine-id";
+            const cid =
+              body.widgetConfigId || cfgCid.value || "00000000-0000-0000-0000-000000000000";
+            return new Response(
+              JSON.stringify({
+                session:
+                  "projects/" +
+                  proj +
+                  "/locations/" +
+                  loc +
+                  "/collections/default_collection/engines/" +
+                  eng +
+                  "/sessions/" +
+                  sessionId,
+                sessionId,
+                deepLinkUrl:
+                  "https://vertexaisearch.cloud.google.com/u/0/home/cid/" +
+                  cid +
+                  "/r/session/" +
+                  sessionId,
+                summary:
+                  "### Simulated Grounded Answer (`" +
+                  proj +
+                  "` / `" +
+                  eng +
+                  "`)\n" +
+                  "- **Query**: **" +
+                  (body.query || "your query") +
+                  "**\n" +
+                  "- **Authenticated Cloud Identity**: `" +
+                  activeEmail +
+                  "` [1]\n" +
+                  "- **Search Mode**: `" +
+                  (body.mode || "streamAssist") +
+                  "` · **Session ID**: `#" +
+                  sessionId +
+                  "` [2]\n\n" +
+                  "> Switch **⚡ Live .env Backend: ON** in the top navbar to execute this query live against your `.env` Gemini Enterprise engine.",
+                results: [
+                  {
+                    index: 1,
+                    title: "Enterprise Architecture & Security Playbook",
+                    url: "https://cloud.google.com/architecture/framework",
+                    snippet: "Simulated reference snippet."
+                  },
+                  {
+                    index: 2,
+                    title: "Gemini Enterprise Session & Workforce Identity Spec",
+                    url: "https://cloud.google.com/generative-ai-app-builder/docs",
+                    snippet: "Multi-turn streamAssist session synchronization and deep-link handoff."
+                  }
+                ]
+              }),
+              { status: 200, headers: { "Content-Type": "application/json" } }
+            );
+          }
+        }
+        return realFetch(url, opts);
+      };
+
+      // Wire Identity Provider preset buttons
+      document.querySelectorAll("#idp-buttons button[data-idp]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#idp-buttons button").forEach((b) => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          applyIdentityPreset(btn.getAttribute("data-idp"), currentStrategy);
+        });
+      });
+
+      // Wire Identity Transform Strategy buttons
+      document.querySelectorAll("#strategy-buttons button[data-strategy]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#strategy-buttons button").forEach((b) => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          applyIdentityPreset(currentIdp, btn.getAttribute("data-strategy"));
+        });
+      });
+
+      // Wire Quick Test Prompt buttons for all 3 variants
+      document.querySelectorAll("button[data-target][data-prompt]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const targetId = btn.getAttribute("data-target");
+          const prompt = btn.getAttribute("data-prompt");
+          const bar = document.getElementById(targetId);
+          if (!bar) return;
+          const variant = bar.getAttribute("variant") || "large";
+          inspVariant.textContent = variant + " (#" + targetId + ")";
+          if (variant === "icon" && bar.shadowRoot) {
+            const shell = bar.shadowRoot.querySelector(".ge-omnibar-shell");
+            if (shell) shell.classList.add("is-icon-expanded");
+          }
+          bar.submitQuery(prompt);
+        });
+      });
+
+      omnibars.forEach((bar) => {
+        bar.addEventListener("ge-search-start", () => {
+          const v = bar.getAttribute("variant") || "large";
+          inspVariant.textContent = v + " (#" + bar.id + ")";
+        });
+      });
+
+      themeBtn.addEventListener("click", () => {
+        isDark = !isDark;
+        const theme = isDark ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", theme);
+        omnibars.forEach((bar) => bar.setAttribute("theme", theme));
+        themeBtn.textContent = "Theme: " + (isDark ? "Dark" : "Light");
+      });
+
+      simBtn.addEventListener("click", () => {
+        setSimulationMode(!simulate);
+      });
+
+      liveEnvBtn.addEventListener("click", () => {
+        setSimulationMode(false);
+      });
+    });
+  </script>
+</body>
+</html>

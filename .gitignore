@@ -1,0 +1,20 @@
+# Environment & credentials (never commit real customer/sandbox secrets)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+service-account*.json
+client_secret*.json
+
+# Dependencies & build caches
+node_modules
+node_modules/
+npm-debug.log*
+.DS_Store
+
+# Local archives & scratch folders
+archive
+archive/
+*.zip
+*.tar.gz

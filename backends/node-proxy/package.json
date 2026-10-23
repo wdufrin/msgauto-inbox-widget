@@ -1,0 +1,10 @@
+{
+  "name": "@google-cloud-field/gemini-omnibar-node-proxy",
+  "version": "1.0.0",
+  "description": "Lightweight zero-dependency Node.js Discovery Engine proxy for <gemini-omnibar>.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,9 @@
+node_modules
+coverage
+.git
+archive
+*.log
+*.zip
+.env
+.env.*
+!.env.example

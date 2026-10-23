@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["packages/omnibar-wc/src/**/*"],
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "node_modules"]
+}
